@@ -7,6 +7,8 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <sys/time.h>
+#include <sys/resource.h>
 
 /*
 [nginx]# ps -ef | grep nginx
@@ -83,7 +85,6 @@ sig_atomic_t  terminate;
 sig_atomic_t  quit;
 int last_process; //每创建一个进程就++
 int exiting;
-
 
 char **os_argv;
 char  *os_argv_last; 
@@ -583,6 +584,7 @@ int main(int argc, char **argv)
     sigset_t set;
 
     mainParseOptions(argc, argv);
+    printf("yang test ... opt_send_signal:%d\r\n", opt_send_signal);
     if (-1 == opt_send_signal)
         if (checkRunningPid())
             exit(1);
@@ -599,7 +601,7 @@ int main(int argc, char **argv)
     start_worker_processes(worker_processes, PROCESS_RESPAWN);
 
     start_dispatcher_process(PROCESS_RESPAWN);
-    printf("father pid2=%d\n",getpid());
+    printf("father pid2=%d\n", getpid());
 
     setproctitle("nginx:master");
     int live = 1;
